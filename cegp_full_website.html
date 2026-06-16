@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CEGP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+--c1:#002715;--c2:#00320f;--c3:#10590c;--c4:#768f3b;--c5:#aed135;--c6:#29633a;
+--white:#fff;--light:#f4f9ee;--border:#d4e8b0;--text:#1a2e10;--muted:#5a7a4a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;color:var(--text);background:var(--white);min-height:100vh}
+
+/* NAV */
+nav{background:var(--c1);border-bottom:2px solid var(--c3);position:sticky;top:0;z-index:200}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-family:'Playfair Display',serif;font-size:21px;font-weight:900;color:var(--white);cursor:pointer;letter-spacing:-0.5px}
+.nav-logo span{color:var(--c5)}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-btn{background:none;border:none;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:rgba(255,255,255,.75);cursor:pointer;padding:8px 12px;border-radius:6px;transition:all .2s}
+.nav-btn:hover,.nav-btn.active{color:var(--white);background:rgba(255,255,255,.1)}
+.nav-pill{background:var(--c5);color:var(--c1)!important;padding:8px 16px!important;border-radius:20px;font-weight:700!important}
+.nav-pill:hover{background:#c8f040!important;background:var(--c5)!important;opacity:.9}
+.nav-auth{display:flex;gap:8px}
+.nav-sign-in{background:rgba(255,255,255,.1);color:var(--white)!important;border:1px solid rgba(255,255,255,.25)!important}
+.nav-sign-up{background:var(--c5);color:var(--c1)!important;font-weight:700!important}
+.notif-dot{width:8px;height:8px;background:#ff4444;border-radius:50%;display:inline-block;margin-left:4px;vertical-align:middle}
+
+/* PAGES */
+.page{display:none;min-height:calc(100vh - 64px)}
+.page.active{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--c1) 0%,var(--c2) 55%,var(--c3) 100%);color:var(--white);padding:90px 24px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23aed135' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-block;background:rgba(174,209,53,.15);border:1px solid rgba(174,209,53,.4);color:var(--c5);font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:24px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,64px);font-weight:900;line-height:1.1;margin-bottom:20px;position:relative}
+.hero h1 span{color:var(--c5)}
+.hero p{font-size:17px;color:rgba(255,255,255,.8);max-width:540px;margin:0 auto 36px;line-height:1.75;position:relative}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-hero-primary{background:var(--c5);color:var(--c1);padding:14px 28px;border-radius:8px;font-weight:700;font-size:15px;border:none;cursor:pointer;transition:all .2s}
+.btn-hero-primary:hover{background:#c8f040;transform:translateY(-1px)}
+.btn-hero-outline{background:transparent;color:var(--white);border:1.5px solid rgba(255,255,255,.35);padding:14px 28px;border-radius:8px;font-weight:600;font-size:15px;cursor:pointer;transition:all .2s}
+.btn-hero-outline:hover{border-color:var(--white);background:rgba(255,255,255,.08)}
+
+/* TICKER */
+.ticker{background:var(--c6);padding:9px 0;overflow:hidden}
+.ticker-inner{display:flex;gap:48px;animation:tick 28s linear infinite;white-space:nowrap}
+.ticker-inner span{color:rgba(255,255,255,.9);font-size:13px;font-weight:500}
+.ticker-dot{color:var(--c5);margin:0 4px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* SECTIONS */
+.section{max-width:1100px;margin:0 auto;padding:60px 24px}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(24px,3vw,34px);font-weight:700;margin-bottom:6px}
+.sec-sub{color:var(--muted);font-size:14px;margin-bottom:36px}
+
+/* CARDS */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:24px}
+.card{border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;background:var(--white)}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,60,20,.12)}
+.card-img{height:180px;background:linear-gradient(135deg,var(--c1),var(--c3));display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.card-cat{position:absolute;top:12px;left:12px;background:var(--c5);color:var(--c1);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:4px}
+.card-body{padding:16px}
+.card-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;line-height:1.35;margin-bottom:8px}
+.card-excerpt{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{display:flex;align-items:center;gap:8px;font-size:12px;color:#999}
+.avatar{width:26px;height:26px;border-radius:50%;background:var(--c4);display:flex;align-items:center;justify-content:center;color:var(--white);font-size:10px;font-weight:700}
+
+/* ARTICLE DETAIL */
+.art-wrap{max-width:740px;margin:0 auto;padding:48px 24px}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--c3);font-weight:500;font-size:14px;cursor:pointer;margin-bottom:32px;background:none;border:none}
+.art-cat{display:inline-block;background:rgba(174,209,53,.15);color:var(--c3);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:4px;margin-bottom:14px}
+.art-title{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,40px);font-weight:900;line-height:1.15;margin-bottom:18px}
+.art-byline{display:flex;align-items:center;gap:12px;padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:32px}
+.art-byline-av{width:40px;height:40px;border-radius:50%;background:var(--c4);display:flex;align-items:center;justify-content:center;color:var(--white);font-weight:700;font-size:14px}
+.art-byline-info p{font-size:14px;font-weight:600;margin-bottom:2px}
+.art-byline-info span{font-size:13px;color:var(--muted)}
+.art-hero{width:100%;height:300px;background:linear-gradient(135deg,var(--c1),var(--c3));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:64px;margin-bottom:32px}
+.art-body{font-size:17px;line-height:1.85;color:#2a3a20}
+.art-body p{margin-bottom:22px}
+.art-body h3{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;margin:32px 0 14px;color:var(--c2)}
+.art-body blockquote{border-left:4px solid var(--c5);padding:14px 18px;background:var(--light);margin:24px 0;font-style:italic;color:var(--muted);border-radius:0 8px 8px 0}
+
+/* COMMENTS */
+.comments-section{margin-top:48px;padding-top:32px;border-top:2px solid var(--border)}
+.comments-section h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:20px}
+.comment-box{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+.comment-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.comment-av{width:32px;height:32px;border-radius:50%;background:var(--c4);display:flex;align-items:center;justify-content:center;color:var(--white);font-size:11px;font-weight:700}
+.comment-name{font-size:14px;font-weight:600}
+.comment-date{font-size:12px;color:#999;margin-left:auto}
+.comment-text{font-size:14px;line-height:1.6;color:#444}
+.comment-input-wrap{background:var(--light);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-top:16px}
+.comment-input-wrap textarea{width:100%;border:none;background:transparent;font-family:'Inter',sans-serif;font-size:14px;resize:none;min-height:80px;outline:none;color:var(--text)}
+.comment-submit{background:var(--c3);color:var(--white);border:none;padding:9px 20px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;margin-top:10px;transition:background .2s}
+.comment-submit:hover{background:var(--c2)}
+.login-to-comment{text-align:center;padding:20px;background:var(--light);border-radius:10px;border:1px solid var(--border);font-size:14px;color:var(--muted)}
+.login-to-comment button{color:var(--c3);font-weight:600;background:none;border:none;cursor:pointer;font-size:14px}
+
+/* BOOKMARKS / NOTIFS badges */
+.bookmark-btn{background:none;border:1.5px solid var(--border);padding:8px 14px;border-radius:8px;font-size:13px;cursor:pointer;color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:6px}
+.bookmark-btn.saved{background:var(--light);border-color:var(--c4);color:var(--c3)}
+
+/* FILTER TABS */
+.filter-wrap{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ftag{background:var(--light);border-radius:20px;padding:6px 16px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .2s;border:1.5px solid var(--border)}
+.ftag.active{background:var(--c3);color:var(--white);border-color:var(--c3)}
+
+/* SUBMIT */
+.submit-wrap{max-width:780px;margin:0 auto;padding:48px 24px}
+.form-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px}
+.form-card h3{font-size:14px;font-weight:600;margin-bottom:18px;color:var(--c2)}
+.fgrp{margin-bottom:16px}
+.fgrp label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:5px}
+.fgrp input,.fgrp textarea,.fgrp select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s;background:var(--white)}
+.fgrp input:focus,.fgrp textarea:focus,.fgrp select:focus{border-color:var(--c4)}
+.fgrp textarea{resize:vertical;min-height:110px;line-height:1.6}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.char-count{font-size:12px;color:#bbb;text-align:right;margin-top:3px}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.tag{background:var(--light);border-radius:20px;padding:5px 13px;font-size:13px;color:var(--muted);cursor:pointer;border:1.5px solid var(--border);transition:all .2s}
+.tag.sel{background:rgba(174,209,53,.15);color:var(--c3);border-color:var(--c4)}
+.submit-btn{width:100%;background:var(--c3);color:var(--white);border:none;padding:15px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:background .2s}
+.submit-btn:hover{background:var(--c2)}
+.notice{background:rgba(174,209,53,.1);border:1px solid var(--c4);border-radius:10px;padding:14px 18px;margin-bottom:20px;display:flex;gap:12px;font-size:13px;color:var(--c2);line-height:1.6}
+
+/* USER DASHBOARD */
+.dash-wrap{max-width:900px;margin:0 auto;padding:40px 24px}
+.dash-header{display:flex;align-items:center;gap:20px;margin-bottom:36px;background:linear-gradient(135deg,var(--c1),var(--c2));padding:28px;border-radius:16px;color:var(--white)}
+.dash-av{width:64px;height:64px;border-radius:50%;background:var(--c5);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--c1)}
+.dash-info h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:4px}
+.dash-info p{font-size:13px;color:rgba(255,255,255,.7)}
+.dash-tabs{display:flex;gap:4px;background:var(--light);padding:4px;border-radius:10px;margin-bottom:24px;width:fit-content;border:1px solid var(--border)}
+.dash-tab{padding:8px 18px;border-radius:7px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--muted);background:none;transition:all .2s;display:flex;align-items:center;gap:6px}
+.dash-tab.active{background:var(--white);color:var(--c2);box-shadow:0 1px 4px rgba(0,60,20,.1);font-weight:600}
+.sub-card{border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:12px;background:var(--white)}
+.sub-card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:8px}
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:12px}
+.sp-pending{background:#fff3cd;color:#856404}
+.sp-approved{background:#d4f0d4;color:#145214}
+.sp-rejected{background:#fde8e8;color:#7a1010}
+.bookmark-card{border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:center;margin-bottom:10px;cursor:pointer;transition:background .2s;background:var(--white)}
+.bookmark-card:hover{background:var(--light)}
+.bookmark-emoji{font-size:28px;width:48px;text-align:center}
+.bk-title{font-weight:600;font-size:14px;margin-bottom:3px}
+.bk-meta{font-size:12px;color:var(--muted)}
+.notif-item{padding:14px 16px;border-radius:10px;margin-bottom:8px;border:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;background:var(--white)}
+.notif-item.unread{background:rgba(174,209,53,.08);border-color:var(--c4)}
+.notif-icon{font-size:20px;margin-top:2px}
+.notif-text{font-size:13px;line-height:1.6;flex:1}
+.notif-text strong{font-weight:600;display:block;margin-bottom:2px}
+.notif-time{font-size:12px;color:#bbb;white-space:nowrap}
+
+/* ADMIN */
+.admin-wrap{max-width:1100px;margin:0 auto;padding:40px 24px}
+.admin-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.admin-hdr h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:700}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.stat{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center}
+.stat-n{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;margin-bottom:4px}
+.stat-l{font-size:12px;color:var(--muted)}
+.stat-n.green{color:var(--c3)}.stat-n.yellow{color:#d68910}.stat-n.red{color:#c0392b}.stat-n.dark{color:var(--c1)}
+.admin-tabs{display:flex;gap:4px;background:var(--light);padding:4px;border-radius:10px;margin-bottom:22px;width:fit-content;border:1px solid var(--border)}
+.atab{padding:8px 18px;border-radius:7px;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:var(--muted);background:none;transition:all .2s}
+.atab.active{background:var(--white);color:var(--c2);box-shadow:0 1px 4px rgba(0,60,20,.1);font-weight:600}
+.acard{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:14px}
+.acard:hover{box-shadow:0 4px 16px rgba(0,60,20,.08)}
+.acard-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.acard-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;flex:1;line-height:1.3}
+.acard-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.acard-meta span{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:3px}
+.acard-excerpt{font-size:13px;color:#555;background:var(--light);padding:10px 13px;border-radius:8px;border-left:3px solid var(--c4);margin-bottom:14px;line-height:1.6}
+.acard-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-approve{background:var(--c3);color:var(--white);border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s}
+.btn-approve:hover{background:var(--c2)}
+.btn-reject{background:var(--white);color:#c0392b;border:1.5px solid #c0392b;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.btn-reject:hover{background:#fdecea}
+.btn-sm{background:var(--light);color:var(--muted);border:1px solid var(--border);padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif}
+.btn-sm:hover{background:var(--border)}
+.admin-users-table{width:100%;border-collapse:collapse;margin-top:8px}
+.admin-users-table th{text-align:left;font-size:12px;font-weight:600;color:var(--muted);padding:10px 14px;border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.5px}
+.admin-users-table td{padding:12px 14px;border-bottom:1px solid var(--light);font-size:13px}
+.admin-users-table tr:hover td{background:var(--light)}
+
+/* AUTH PAGES */
+.auth-page{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 64px);padding:24px;background:var(--light)}
+.auth-card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:40px;max-width:420px;width:100%}
+.auth-card h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:6px;color:var(--c1)}
+.auth-card p{font-size:14px;color:var(--muted);margin-bottom:28px}
+.auth-card .fgrp input{background:var(--light)}
+.auth-submit{width:100%;background:var(--c2);color:var(--white);border:none;padding:13px;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:background .2s;font-family:'Inter',sans-serif}
+.auth-submit:hover{background:var(--c1)}
+.auth-switch{text-align:center;margin-top:18px;font-size:14px;color:var(--muted)}
+.auth-switch button{color:var(--c3);font-weight:600;background:none;border:none;cursor:pointer;font-size:14px}
+.auth-err{color:#c0392b;font-size:13px;margin-top:10px;display:none;padding:10px 13px;background:#fdecea;border-radius:8px}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:center;justify-content:center;padding:24px}
+.modal-box{background:var(--white);border-radius:14px;padding:28px;max-width:460px;width:100%}
+.modal-box h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:8px;color:var(--c1)}
+.modal-box p{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.btn-cancel{background:var(--light);color:var(--muted);border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer}
+.btn-confirm-reject{background:#c0392b;color:var(--white);border:none;padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+
+/* EMPTY */
+.empty{text-align:center;padding:60px 24px;color:#bbb}
+.empty div{font-size:48px;margin-bottom:14px}
+.empty p{font-size:15px}
+
+/* ABOUT */
+.about-hero{background:linear-gradient(135deg,var(--c1),var(--c2));color:var(--white);padding:72px 24px;text-align:center}
+.about-hero h1{font-family:'Playfair Display',serif;font-size:clamp(30px,5vw,50px);font-weight:900;margin-bottom:14px}
+.about-hero p{font-size:16px;color:rgba(255,255,255,.75);max-width:580px;margin:0 auto}
+.val-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:20px;margin-top:36px}
+.val-card{border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;background:var(--white)}
+.val-icon{font-size:32px;margin-bottom:12px}
+.val-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:6px;color:var(--c2)}
+.val-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:20px;margin-top:32px}
+.team-card{text-align:center}
+.team-av{width:68px;height:68px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--white)}
+.team-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;margin-bottom:3px;color:var(--c2)}
+.team-role{font-size:12px;color:var(--muted)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--c1);color:var(--white);padding:13px 20px;border-radius:10px;font-size:14px;font-weight:500;transform:translateY(100px);opacity:0;transition:all .35s;z-index:999;max-width:340px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* FOOTER */
+footer{background:var(--c1);color:var(--white);padding:48px 24px 28px}
+.foot-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px}
+.foot-logo{font-family:'Playfair Display',serif;font-size:19px;font-weight:900;margin-bottom:10px}
+.foot-logo span{color:var(--c5)}
+.foot-desc{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7}
+.foot-col h4{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:14px}
+.foot-col button{display:block;font-size:13px;color:rgba(255,255,255,.6);margin-bottom:9px;background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;text-align:left;transition:color .2s}
+.foot-col button:hover{color:var(--white)}
+.foot-bottom{max-width:1100px;margin:36px auto 0;border-top:1px solid rgba(255,255,255,.1);padding-top:20px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.3)}
+
+@media(max-width:700px){.foot-inner{grid-template-columns:1fr}.frow{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="goHome()">CEG<span>P</span></div>
+    <div class="nav-links" id="navLinks">
+      <button class="nav-btn" onclick="showPage('home')" id="nav-home">Home</button>
+      <button class="nav-btn" onclick="showPage('articles')" id="nav-articles">Articles</button>
+      <button class="nav-btn" onclick="showPage('about')" id="nav-about">About</button>
+      <div id="nav-auth-area"></div>
+    </div>
+  </div>
+</nav>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="rejectModal" style="display:none">
+  <div class="modal-box">
+    <h3>Reject Submission</h3>
+    <p>Provide feedback for the author. This will appear in their notifications.</p>
+    <textarea id="reject-reason" style="width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;min-height:90px;outline:none;resize:vertical" placeholder="e.g. Needs more sources, incomplete facts..."></textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm-reject" onclick="confirmReject()">Confirm Rejection</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- PAGES -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-badge">🏆 Official Publication · Est. 1952</div>
+    <h1>The Voice of <span>Filipino</span><br/>Student Journalists</h1>
+    <p>Empowering college editors and student journalists across the Philippines with stories that matter.</p>
+    <div class="hero-btns">
+      <button class="btn-hero-primary" onclick="showPage('articles')">Read Articles</button>
+      <button class="btn-hero-outline" onclick="requireAuthThen('submit')">✏️ Submit Article</button>
+    </div>
+  </div>
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>📌 CEGP National Convention 2024<span class="ticker-dot">•</span></span>
+      <span>📰 Press Freedom Week<span class="ticker-dot">•</span></span>
+      <span>🏅 Best Campus Publication Awards<span class="ticker-dot">•</span></span>
+      <span>✍️ Editorial Writing Seminar<span class="ticker-dot">•</span></span>
+      <span>📌 CEGP National Convention 2024<span class="ticker-dot">•</span></span>
+      <span>📰 Press Freedom Week<span class="ticker-dot">•</span></span>
+      <span>🏅 Best Campus Publication Awards<span class="ticker-dot">•</span></span>
+      <span>✍️ Editorial Writing Seminar<span class="ticker-dot">•</span></span>
+    </div>
+  </div>
+  <div class="section">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+      <div class="sec-title">Published Articles</div>
+      <button onclick="showPage('articles')" style="background:none;border:none;color:var(--c3);font-weight:600;font-size:13px;cursor:pointer">View all →</button>
+    </div>
+    <p class="sec-sub">Approved and published by our editorial team</p>
+    <div class="grid" id="home-grid"></div>
+    <div id="home-empty" class="empty" style="display:none"><div>📭</div><p>No published articles yet.</p></div>
+  </div>
+</div>
+
+<div class="page" id="page-articles">
+  <div style="background:var(--light);padding:48px 24px;text-align:center;border-bottom:1px solid var(--border)">
+    <div class="sec-title">All Articles</div>
+    <p style="color:var(--muted);font-size:14px;margin:8px 0 22px">Stories from campuses across the Philippines</p>
+    <div class="filter-wrap" id="filter-tabs">
+      <button class="ftag active" onclick="filterArts('All',this)">All</button>
+      <button class="ftag" onclick="filterArts('News',this)">News</button>
+      <button class="ftag" onclick="filterArts('Opinion',this)">Opinion</button>
+      <button class="ftag" onclick="filterArts('Feature',this)">Feature</button>
+      <button class="ftag" onclick="filterArts('Sports',this)">Sports</button>
+      <button class="ftag" onclick="filterArts('Culture',this)">Culture</button>
+    </div>
+  </div>
+  <div class="section">
+    <div class="grid" id="all-grid"></div>
+    <div id="all-empty" class="empty" style="display:none"><div>🔍</div><p>No articles in this category.</p></div>
+  </div>
+</div>
+
+<div class="page" id="page-article-detail">
+  <div class="art-wrap">
+    <button class="back-btn" onclick="goBack()">← Back</button>
+    <div id="art-content"></div>
+    <div id="art-actions" style="display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)"></div>
+    <div id="comments-area"></div>
+  </div>
+</div>
+
+<div class="page" id="page-submit">
+  <div class="submit-wrap">
+    <div style="margin-bottom:28px">
+      <h2 style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;margin-bottom:8px;color:var(--c1)">Submit an Article</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.6">Share your story with the CEGP community. All submissions go through editorial review.</p>
+    </div>
+    <div class="notice"><span>📋</span><div><strong style="display:block;margin-bottom:3px;color:var(--c2)">Editorial Review</strong>Your article will be reviewed within 3–5 business days. You'll be notified here if it's approved or returned with feedback.</div></div>
+    <div class="form-card">
+      <h3>📝 Article Details</h3>
+      <div class="fgrp"><label>Title *</label><input id="f-title" placeholder="Enter a compelling headline..." maxlength="120" oninput="updateChar('f-title','c-title',120)"/><div class="char-count" id="c-title">0/120</div></div>
+      <div class="frow">
+        <div class="fgrp"><label>Category *</label><select id="f-cat"><option value="">Select...</option><option>News</option><option>Opinion</option><option>Feature</option><option>Sports</option><option>Culture</option><option>Campus Life</option></select></div>
+        <div class="fgrp"><label>School / Publication</label><input id="f-school" placeholder="e.g. UP Collegian..."/></div>
+      </div>
+      <div class="fgrp"><label>Excerpt *</label><textarea id="f-excerpt" placeholder="Brief 2–3 sentence summary..." maxlength="280" oninput="updateChar('f-excerpt','c-exc',280)" style="min-height:80px"></textarea><div class="char-count" id="c-exc">0/280</div></div>
+      <div class="fgrp"><label>Full Article *</label><textarea id="f-body" placeholder="Write your full article here..." style="min-height:260px"></textarea></div>
+      <div class="fgrp"><label>Tags</label><div class="tag-wrap"><button class="tag" onclick="toggleTag(this)">Press Freedom</button><button class="tag" onclick="toggleTag(this)">Student Rights</button><button class="tag" onclick="toggleTag(this)">Campus Life</button><button class="tag" onclick="toggleTag(this)">National News</button><button class="tag" onclick="toggleTag(this)">Editorial</button><button class="tag" onclick="toggleTag(this)">Investigation</button></div></div>
+    </div>
+    <div class="form-card">
+      <h3>👤 Author Info</h3>
+      <div class="frow">
+        <div class="fgrp"><label>Full Name *</label><input id="f-author" placeholder="Your name..."/></div>
+        <div class="fgrp"><label>Position</label><input id="f-role" placeholder="e.g. Editor-in-Chief..."/></div>
+      </div>
+      <div class="fgrp"><label>Email *</label><input type="email" id="f-email" placeholder="your@email.com"/></div>
+    </div>
+    <button class="submit-btn" onclick="submitArticle()">Submit for Editorial Review →</button>
+    <p style="text-align:center;font-size:12px;color:#bbb;margin-top:12px">Will not be published until approved by editors.</p>
+  </div>
+</div>
+
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <h1>About CEGP</h1>
+    <p>Championing press freedom and nurturing the next generation of Filipino journalists since 1952.</p>
+  </div>
+  <div class="section" style="max-width:760px">
+    <div class="sec-title">Who We Are</div>
+    <p style="font-size:15px;line-height:1.85;color:#3a5a2a;margin-top:14px">The <strong>College Editors Guild of the Philippines (CEGP)</strong> is a national organization of student publications and campus journalists. Founded in 1952, it is one of the oldest and most respected student press organizations in the country, advocating for academic freedom, press freedom, and the rights of student journalists.</p>
+  </div>
+  <div style="background:var(--light);padding:56px 24px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div style="max-width:1100px;margin:0 auto">
+      <div class="sec-title">Our Core Values</div>
+      <div class="val-grid">
+        <div class="val-card"><div class="val-icon">🗞️</div><div class="val-title">Press Freedom</div><div class="val-desc">We uphold the constitutional right of all journalists to report freely and without fear.</div></div>
+        <div class="val-card"><div class="val-icon">🎓</div><div class="val-title">Academic Excellence</div><div class="val-desc">We champion high standards of journalism in all campus publications nationwide.</div></div>
+        <div class="val-card"><div class="val-icon">✊</div><div class="val-title">Student Rights</div><div class="val-desc">We defend student editors against censorship, harassment, and intimidation.</div></div>
+        <div class="val-card"><div class="val-icon">🤝</div><div class="val-title">Solidarity</div><div class="val-desc">One voice for the Filipino student press across all schools and regions.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-title">National Officers</div>
+    <p class="sec-sub">A.Y. 2024–2025</p>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-av" style="background:var(--c3)">AG</div><div class="team-name">Andrea Go</div><div class="team-role">National President</div></div>
+      <div class="team-card"><div class="team-av" style="background:var(--c2)">RM</div><div class="team-name">Rafael Mendoza</div><div class="team-role">Secretary General</div></div>
+      <div class="team-card"><div class="team-av" style="background:var(--c6)">LC</div><div class="team-name">Lorraine Cruz</div><div class="team-role">Editor-in-Chief</div></div>
+      <div class="team-card"><div class="team-av" style="background:var(--c4)">BS</div><div class="team-name">Benjie Santos</div><div class="team-role">VP for Finance</div></div>
+      <div class="team-card"><div class="team-av" style="background:var(--c5);color:var(--c1)">MP</div><div class="team-name">Maria Pangilinan</div><div class="team-role">VP for Externals</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH PAGES -->
+<div class="page" id="page-login">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div style="font-size:36px;margin-bottom:14px">👋</div>
+      <h2>Welcome back</h2>
+      <p>Sign in to your CEGP account</p>
+      <div class="fgrp"><label>Email</label><input type="email" id="li-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <div class="fgrp"><label>Password</label><input type="password" id="li-pass" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <button class="auth-submit" onclick="doLogin()">Sign In</button>
+      <div class="auth-err" id="li-err">Incorrect email or password.</div>
+      <div class="auth-switch">Don't have an account? <button onclick="showPage('signup')">Sign up</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-signup">
+  <div class="auth-page">
+    <div class="auth-card">
+      <div style="font-size:36px;margin-bottom:14px">✍️</div>
+      <h2>Create an account</h2>
+      <p>Join the CEGP community of student journalists</p>
+      <div class="frow">
+        <div class="fgrp"><label>First Name</label><input id="su-fname" placeholder="Juan"/></div>
+        <div class="fgrp"><label>Last Name</label><input id="su-lname" placeholder="dela Cruz"/></div>
+      </div>
+      <div class="fgrp"><label>Email</label><input type="email" id="su-email" placeholder="your@email.com"/></div>
+      <div class="fgrp"><label>School / Publication</label><input id="su-school" placeholder="e.g. UP Collegian"/></div>
+      <div class="fgrp"><label>Password</label><input type="password" id="su-pass" placeholder="At least 6 characters"/></div>
+      <button class="auth-submit" onclick="doSignup()">Create Account</button>
+      <div class="auth-err" id="su-err"></div>
+      <div class="auth-switch">Already have an account? <button onclick="showPage('login')">Sign in</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- USER DASHBOARD -->
+<div class="page" id="page-dashboard">
+  <div class="dash-wrap">
+    <div class="dash-header" id="dash-header-info"></div>
+    <div class="dash-tabs">
+      <button class="dash-tab active" onclick="switchDashTab('submissions',this)">📄 My Submissions</button>
+      <button class="dash-tab" onclick="switchDashTab('bookmarks',this)">🔖 Bookmarks</button>
+      <button class="dash-tab" onclick="switchDashTab('notifications',this)" id="notif-tab-btn">🔔 Notifications</button>
+    </div>
+    <div id="dash-content"></div>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div class="page" id="page-admin">
+  <div class="admin-wrap">
+    <div class="admin-hdr">
+      <div>
+        <h2>Editorial Dashboard</h2>
+        <p style="font-size:13px;color:var(--muted);margin-top:4px">Logged in as Admin · <button onclick="doLogout()" style="color:var(--c3);background:none;border:none;cursor:pointer;font-size:13px;font-weight:500">Sign out</button></p>
+      </div>
+      <div id="admin-pending-badge" style="background:var(--c5);color:var(--c1);font-weight:700;padding:6px 16px;border-radius:20px;font-size:13px;display:none"></div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-n dark" id="st-total">0</div><div class="stat-l">Total Submissions</div></div>
+      <div class="stat"><div class="stat-n yellow" id="st-pending">0</div><div class="stat-l">Pending Review</div></div>
+      <div class="stat"><div class="stat-n green" id="st-approved">0</div><div class="stat-l">Published</div></div>
+      <div class="stat"><div class="stat-n red" id="st-rejected">0</div><div class="stat-l">Rejected</div></div>
+    </div>
+    <div class="admin-tabs">
+      <button class="atab active" onclick="switchAdminTab('pending',this)">⏳ Pending</button>
+      <button class="atab" onclick="switchAdminTab('approved',this)">✅ Published</button>
+      <button class="atab" onclick="switchAdminTab('rejected',this)">❌ Rejected</button>
+      <button class="atab" onclick="switchAdminTab('users',this)">👥 Users</button>
+    </div>
+    <div id="admin-list"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div><div class="foot-logo">College Editors Guild<br/>of the <span>Philippines</span></div><p class="foot-desc" style="margin-top:10px">Defending the student press since 1952.</p></div>
+    <div class="foot-col"><h4>Navigate</h4><button onclick="showPage('home')">Home</button><button onclick="showPage('articles')">Articles</button><button onclick="showPage('about')">About Us</button><button onclick="requireAuthThen('submit')">Submit Article</button></div>
+    <div class="foot-col"><h4>Connect</h4><button>Facebook</button><button>Twitter / X</button><button>Instagram</button><button>Email Us</button></div>
+  </div>
+  <div class="foot-bottom"><span>© 2024 College Editors Guild of the Philippines</span><span>Defending the Student Press</span></div>
+</footer>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────
+const ADMIN_EMAIL='cegphils@gmail.com', ADMIN_PASS='qwerty';
+const EMOJIS=['🗞️','📰','✍️','📢','🎙️','📸','🔍','📡'];
+
+let currentUser=null; // {email,name,school,isAdmin,bookmarks:[],notifications:[]}
+let users=[]; // registered regular users
+let submissions=[
+  {id:1,title:"UP Collegian Defies Admin Censorship Attempt",cat:"News",author:"Reyna Santos",role:"Editor-in-Chief, UP Collegian",school:"University of the Philippines",date:"Dec 12, 2024",excerpt:"The UP student paper fought back against administration attempts to suppress its landmark investigation on scholarship fund irregularities.",body:`<p>The University of the Philippines Collegian successfully resisted a controversial censorship attempt by the university administration, after the paper published a landmark investigative report exposing alleged irregularities in the management of student scholarship funds.</p><h3>The Controversy</h3><p>University officials summoned the editorial board and demanded the retraction of the article. The editorial board unanimously refused.</p><blockquote>"We will not retract a single word. Every claim in our report is backed by documents." — Reyna Santos, EIC</blockquote><p>The CEGP National Council condemned the administration's actions as a direct violation of Republic Act 7079.</p>`,status:'approved',emoji:'🗞️',email:'reyna@upcollegian.ph',submittedBy:null,comments:[]},
+  {id:2,title:"CEGP Launches 2024 National Campus Journalism Summit",cat:"Feature",author:"Carlo Reyes",role:"Staff Writer",school:"De La Salle University",date:"Dec 8, 2024",excerpt:"Hundreds of student journalists gathered in Manila for the most well-attended CEGP summit in a decade.",body:`<p>Hundreds of student journalists, editors, and campus publication advisers gathered in Manila last week for the 2024 CEGP National Campus Journalism Summit.</p><h3>Highlights</h3><p>The three-day event featured workshops on digital journalism, fact-checking, photojournalism, and the role of AI in newsrooms.</p><blockquote>"Student journalism is not a rehearsal. What you do on campus is real journalism." — Keynote Speaker</blockquote>`,status:'approved',emoji:'🎙️',email:'carlo@dlsu.edu.ph',submittedBy:null,comments:[]},
+  {id:3,title:"Editorial: The Administration Owes Student Journalists an Apology",cat:"Opinion",author:"Mia Dela Cruz",role:"Associate Editor",school:"Ateneo de Manila",date:"Dec 5, 2024",excerpt:"When administrators treat student journalists as threats rather than truth-tellers, they betray the mission of education.",body:`<p>It has become alarmingly common for school administrators to view student publications as liabilities.</p><blockquote>"Censorship is not discipline. Suppression is not guidance."</blockquote><p>CEGP documented 14 verified cases of administrative interference in the past year alone.</p>`,status:'pending',emoji:'✍️',email:'mia@ateneo.edu',submittedBy:null,comments:[]},
+];
+
+let prevPage='home';
+let artFilter='All';
+let adminTab='pending';
+let dashTab='submissions';
+let rejectId=null;
+let viewingArtId=null;
+
+// ─── INIT ─────────────────────────────────────────────────────────
+function init(){renderNav();renderHome();renderAllArts();updateAdminStats();}
+
+// ─── NAV ──────────────────────────────────────────────────────────
+function renderNav(){
+  const area=document.getElementById('nav-auth-area');
+  if(!currentUser){
+    area.innerHTML=`
+      <button class="nav-btn nav-sign-in nav-pill" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.85)!important;border:1px solid rgba(255,255,255,.2)!important;border-radius:6px!important;font-weight:500!important;padding:8px 14px!important" onclick="showPage('login')">Sign In</button>
+      <button class="nav-btn nav-pill" onclick="showPage('signup')">Sign Up</button>`;
+  } else if(currentUser.isAdmin){
+    area.innerHTML=`
+      <button class="nav-btn" onclick="showPage('admin')">⚙️ Dashboard</button>
+      <button class="nav-btn" onclick="doLogout()">Sign Out</button>`;
+  } else {
+    const unread=currentUser.notifications.filter(n=>!n.read).length;
+    area.innerHTML=`
+      <button class="nav-btn" onclick="requireAuthThen('submit')">✏️ Submit</button>
+      <button class="nav-btn" onclick="showPage('dashboard')" id="dash-nav-btn">👤 ${currentUser.name.split(' ')[0]}${unread?`<span class="notif-dot"></span>`:''}</button>
+      <button class="nav-btn" onclick="doLogout()">Sign Out</button>`;
+  }
+}
+
+// ─── PAGES ────────────────────────────────────────────────────────
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn[id^="nav-"]').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const nb=document.getElementById('nav-'+id);
+  if(nb)nb.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='dashboard')renderDashboard();
+  if(id==='admin'){renderAdminList();updateAdminStats();}
+}
+
+function goHome(){showPage('home');}
+function goBack(){showPage(prevPage);}
+
+function requireAuthThen(page){
+  if(!currentUser){showPage('login');showToast('Please sign in to '+page+' an article.');}
+  else showPage(page);
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────
+function doLogin(){
+  const email=document.getElementById('li-email').value.trim();
+  const pass=document.getElementById('li-pass').value.trim();
+  const err=document.getElementById('li-err');
+  err.style.display='none';
+  if(email===ADMIN_EMAIL&&pass===ADMIN_PASS){
+    currentUser={email,name:'CEGP Admin',school:'',isAdmin:true,bookmarks:[],notifications:[]};
+    renderNav();showPage('admin');showToast('Welcome, Admin!');return;
+  }
+  const u=users.find(x=>x.email===email&&x.pass===pass);
+  if(!u){err.style.display='block';return;}
+  currentUser={...u,isAdmin:false};
+  renderNav();showPage('home');showToast('Welcome back, '+currentUser.name.split(' ')[0]+'!');
+}
+
+function doSignup(){
+  const fname=document.getElementById('su-fname').value.trim();
+  const lname=document.getElementById('su-lname').value.trim();
+  const email=document.getElementById('su-email').value.trim();
+  const school=document.getElementById('su-school').value.trim();
+  const pass=document.getElementById('su-pass').value.trim();
+  const err=document.getElementById('su-err');
+  err.style.display='none';
+  if(!fname||!lname||!email||!pass){err.textContent='Please fill in all required fields.';err.style.display='block';return;}
+  if(pass.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return;}
+  if(users.find(u=>u.email===email)||email===ADMIN_EMAIL){err.textContent='Email already registered.';err.style.display='block';return;}
+  const newUser={email,pass,name:fname+' '+lname,school,bookmarks:[],notifications:[]};
+  users.push(newUser);
+  currentUser={...newUser,isAdmin:false};
+  renderNav();showPage('home');
+  showToast('Account created! Welcome, '+fname+'!');
+}
+
+function doLogout(){
+  currentUser=null;renderNav();showPage('home');showToast('Signed out successfully.');
+}
+
+// ─── ARTICLES ─────────────────────────────────────────────────────
+function renderHome(){
+  const approved=submissions.filter(s=>s.status==='approved');
+  const grid=document.getElementById('home-grid');
+  const empty=document.getElementById('home-empty');
+  if(!approved.length){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  grid.innerHTML=approved.map(a=>cardHTML(a,'home')).join('');
+}
+
+function renderAllArts(){
+  const approved=submissions.filter(s=>s.status==='approved');
+  const filtered=artFilter==='All'?approved:approved.filter(a=>a.cat===artFilter);
+  const grid=document.getElementById('all-grid');
+  const empty=document.getElementById('all-empty');
+  if(!filtered.length){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  grid.innerHTML=filtered.map(a=>cardHTML(a,'articles')).join('');
+}
+
+function cardHTML(a,from){
+  return `<div class="card" onclick="openArt(${a.id},'${from}')">
+    <div class="card-img">${a.emoji}<div class="card-cat">${a.cat}</div></div>
+    <div class="card-body">
+      <div class="card-title">${a.title}</div>
+      <div class="card-excerpt">${a.excerpt}</div>
+      <div class="card-meta"><div class="avatar">${initials(a.author)}</div><span>${a.author}</span><span>·</span><span>${a.date}</span></div>
+    </div></div>`;
+}
+
+function openArt(id,from){
+  prevPage=from||prevPage;
+  viewingArtId=id;
+  const a=submissions.find(x=>x.id===id);
+  if(!a)return;
+  document.getElementById('art-content').innerHTML=`
+    <div class="art-cat">${a.cat}</div>
+    <div class="art-title">${a.title}</div>
+    <div class="art-byline">
+      <div class="art-byline-av">${initials(a.author)}</div>
+      <div class="art-byline-info"><p>${a.author}</p><span>${a.role} · ${a.school} · ${a.date}</span></div>
+    </div>
+    <div class="art-hero">${a.emoji}</div>
+    <div class="art-body">${a.body}</div>`;
+  // Bookmark button
+  const isBookmarked=currentUser&&currentUser.bookmarks.includes(id);
+  document.getElementById('art-actions').innerHTML=currentUser&&!currentUser.isAdmin?
+    `<button class="bookmark-btn ${isBookmarked?'saved':''}" id="bk-btn" onclick="toggleBookmark(${id})">${isBookmarked?'🔖 Bookmarked':'🔖 Bookmark'}</button>`:
+    !currentUser?`<button class="bookmark-btn" onclick="showPage('login');showToast('Sign in to bookmark articles.')">🔖 Bookmark</button>`:'';
+  renderComments(a);
+  showPage('article-detail');
+}
+
+function toggleBookmark(id){
+  if(!currentUser)return;
+  const idx=currentUser.bookmarks.indexOf(id);
+  if(idx>-1)currentUser.bookmarks.splice(idx,1);
+  else currentUser.bookmarks.push(id);
+  // Update user in array
+  const u=users.find(x=>x.email===currentUser.email);
+  if(u)u.bookmarks=currentUser.bookmarks;
+  const btn=document.getElementById('bk-btn');
+  if(btn){
+    const saved=currentUser.bookmarks.includes(id);
+    btn.textContent=saved?'🔖 Bookmarked':'🔖 Bookmark';
+    btn.className='bookmark-btn'+(saved?' saved':'');
+  }
+  showToast(currentUser.bookmarks.includes(id)?'Bookmarked!':'Bookmark removed.');
+}
+
+function renderComments(a){
+  const area=document.getElementById('comments-area');
+  const commentsHTML=a.comments.length?a.comments.map(c=>`
+    <div class="comment-box">
+      <div class="comment-header">
+        <div class="comment-av">${initials(c.name)}</div>
+        <div class="comment-name">${c.name}</div>
+        <div class="comment-date">${c.date}</div>
+      </div>
+      <div class="comment-text">${c.text}</div>
+    </div>`).join(''):'<p style="font-size:14px;color:#bbb;margin-bottom:16px">No comments yet. Be the first!</p>';
+  const inputHTML=currentUser&&!currentUser.isAdmin?`
+    <div class="comment-input-wrap">
+      <textarea id="comment-txt" placeholder="Write a comment..."></textarea>
+      <button class="comment-submit" onclick="postComment(${a.id})">Post Comment</button>
+    </div>`:`<div class="login-to-comment">${!currentUser?`<button onclick="showPage('login')">Sign in</button> to leave a comment.`:'Comments not available for admin.'}</div>`;
+  area.innerHTML=`<div class="comments-section"><h3>Comments (${a.comments.length})</h3>${commentsHTML}${inputHTML}</div>`;
+}
+
+function postComment(artId){
+  const txt=document.getElementById('comment-txt').value.trim();
+  if(!txt)return;
+  const a=submissions.find(x=>x.id===artId);
+  if(!a)return;
+  const today=new Date().toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+  a.comments.push({name:currentUser.name,text:txt,date:today});
+  renderComments(a);
+  showToast('Comment posted!');
+}
+
+function filterArts(cat,btn){
+  artFilter=cat;
+  document.querySelectorAll('#filter-tabs .ftag').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAllArts();
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────────────
+function submitArticle(){
+  const title=document.getElementById('f-title').value.trim();
+  const cat=document.getElementById('f-cat').value;
+  const excerpt=document.getElementById('f-excerpt').value.trim();
+  const body=document.getElementById('f-body').value.trim();
+  const author=document.getElementById('f-author').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  if(!title||!cat||!excerpt||!body||!author||!email){showToast('⚠️ Fill in all required fields.');return;}
+  const role=document.getElementById('f-role').value.trim();
+  const school=document.getElementById('f-school').value.trim();
+  const today=new Date().toLocaleDateString('en-PH',{year:'numeric',month:'short',day:'numeric'});
+  const newSub={
+    id:Date.now(),title,cat,author,role:role||'Contributor',school:school||'Campus Publication',
+    date:today,excerpt,body:`<p>${body.split('\n\n').join('</p><p>')}</p>`,
+    status:'pending',emoji:EMOJIS[Math.floor(Math.random()*EMOJIS.length)],email,
+    submittedBy:currentUser?currentUser.email:null,comments:[]
+  };
+  submissions.push(newSub);
+  // Add notification to submitting user
+  if(currentUser){
+    currentUser.notifications.unshift({id:Date.now(),type:'submitted',title,read:false,date:today,text:`Your article "${title}" has been submitted and is pending editorial review.`});
+    const u=users.find(x=>x.email===currentUser.email);
+    if(u)u.notifications=currentUser.notifications;
+  }
+  ['f-title','f-excerpt','f-body','f-author','f-role','f-email','f-school'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('f-cat').value='';
+  updateChar('f-title','c-title',120);updateChar('f-excerpt','c-exc',280);
+  updateAdminStats();renderNav();
+  showToast('✅ Submitted! Editors will review it shortly.');
+  showPage('dashboard');
+}
+
+// ─── USER DASHBOARD ───────────────────────────────────────────────
+function renderDashboard(){
+  if(!currentUser)return;
+  document.getElementById('dash-header-info').innerHTML=`
+    <div class="dash-av">${initials(currentUser.name)}</div>
+    <div class="dash-info">
+      <h2>${currentUser.name}</h2>
+      <p>${currentUser.school||'CEGP Member'} · ${currentUser.email}</p>
+    </div>`;
+  renderDashContent();
+}
+
+function switchDashTab(tab,btn){
+  dashTab=tab;
+  document.querySelectorAll('.dash-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(tab==='notifications'&&currentUser){
+    currentUser.notifications.forEach(n=>n.read=true);
+    const u=users.find(x=>x.email===currentUser.email);
+    if(u)u.notifications=currentUser.notifications;
+    renderNav();
+  }
+  renderDashContent();
+}
+
+function renderDashContent(){
+  const c=document.getElementById('dash-content');
+  if(dashTab==='submissions'){
+    const mine=submissions.filter(s=>s.submittedBy===currentUser.email);
+    if(!mine.length){c.innerHTML='<div class="empty"><div>📝</div><p>No submissions yet. <button onclick="showPage(\'submit\')" style="color:var(--c3);background:none;border:none;cursor:pointer;font-weight:600;font-size:15px">Write your first article</button></p></div>';return;}
+    c.innerHTML=mine.map(s=>{
+      const sc={pending:'sp-pending',approved:'sp-approved',rejected:'sp-rejected'}[s.status];
+      const sl={pending:'⏳ Pending Review',approved:'✅ Published',rejected:'❌ Rejected'}[s.status];
+      return `<div class="sub-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px">
+          <div class="sub-card-title">${s.title}</div>
+          <span class="status-pill ${sc}">${sl}</span>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">${s.cat} · ${s.date}</div>
+        ${s.status==='rejected'&&s.rejectReason?`<div style="font-size:13px;background:#fff3cd;border-radius:6px;padding:8px 12px;color:#856404;margin-top:6px">💬 Editor feedback: ${s.rejectReason}</div>`:''}
+        ${s.status==='approved'?`<button onclick="openArt(${s.id},'dashboard')" style="background:none;border:none;color:var(--c3);font-weight:600;font-size:13px;cursor:pointer;margin-top:6px">Read published article →</button>`:''}
+      </div>`;
+    }).join('');
+  } else if(dashTab==='bookmarks'){
+    const bk=currentUser.bookmarks.map(id=>submissions.find(s=>s.id===id)).filter(Boolean);
+    if(!bk.length){c.innerHTML='<div class="empty"><div>🔖</div><p>No bookmarks yet. Save articles while reading!</p></div>';return;}
+    c.innerHTML=bk.map(a=>`
+      <div class="bookmark-card" onclick="openArt(${a.id},'dashboard')">
+        <div class="bookmark-emoji">${a.emoji}</div>
+        <div><div class="bk-title">${a.title}</div><div class="bk-meta">${a.cat} · ${a.author} · ${a.date}</div></div>
+      </div>`).join('');
+  } else {
+    const notifs=currentUser.notifications;
+    if(!notifs.length){c.innerHTML='<div class="empty"><div>🔔</div><p>No notifications yet.</p></div>';return;}
+    c.innerHTML=notifs.map(n=>`
+      <div class="notif-item ${n.read?'':'unread'}">
+        <div class="notif-icon">${n.type==='approved'?'✅':n.type==='rejected'?'❌':'📋'}</div>
+        <div class="notif-text"><strong>${n.type==='approved'?'Article Published':n.type==='rejected'?'Article Returned':'Submission Received'}</strong>${n.text}</div>
+        <div class="notif-time">${n.date}</div>
+      </div>`).join('');
+  }
+}
+
+// ─── ADMIN ────────────────────────────────────────────────────────
+function switchAdminTab(tab,btn){
+  adminTab=tab;
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAdminList();
+}
+
+function renderAdminList(){
+  const list=document.getElementById('admin-list');
+  if(adminTab==='users'){
+    if(!users.length){list.innerHTML='<div class="empty"><div>👥</div><p>No registered users yet.</p></div>';return;}
+    list.innerHTML=`<table class="admin-users-table"><thead><tr><th>Name</th><th>Email</th><th>School</th><th>Submissions</th><th>Bookmarks</th></tr></thead><tbody>
+      ${users.map(u=>`<tr><td><strong>${u.name}</strong></td><td>${u.email}</td><td>${u.school||'—'}</td><td>${submissions.filter(s=>s.submittedBy===u.email).length}</td><td>${u.bookmarks.length}</td></tr>`).join('')}
+    </tbody></table>`;
+    return;
+  }
+  const filtered=submissions.filter(s=>s.status===adminTab);
+  if(!filtered.length){
+    const msgs={pending:'No pending submissions.',approved:'No published articles yet.',rejected:'No rejected submissions.'};
+    list.innerHTML=`<div class="empty"><div>${adminTab==='pending'?'📭':adminTab==='approved'?'📰':'🗑️'}</div><p>${msgs[adminTab]}</p></div>`;
+    return;
+  }
+  list.innerHTML=filtered.map(s=>{
+    const statusClass={pending:'sp-pending',approved:'sp-approved',rejected:'sp-rejected'}[s.status];
+    const statusLabel={pending:'⏳ Pending',approved:'✅ Published',rejected:'❌ Rejected'}[s.status];
+    let actions='';
+    if(s.status==='pending')actions=`<button class="btn-approve" onclick="approveArt(${s.id})">✓ Approve & Publish</button><button class="btn-reject" onclick="openRejectModal(${s.id})">✗ Reject</button><button class="btn-sm" onclick="previewArt(${s.id})">👁 Preview</button>`;
+    else if(s.status==='approved')actions=`<button class="btn-sm" onclick="unpublishArt(${s.id})">↩ Unpublish</button>`;
+    else actions=`<button class="btn-approve" onclick="approveArt(${s.id})">↩ Approve Instead</button>${s.rejectReason?`<span style="font-size:12px;color:var(--muted);align-self:center">Feedback: "${s.rejectReason.slice(0,50)}..."</span>`:''}`;
+    return `<div class="acard">
+      <div class="acard-top"><div class="acard-title">${s.title}</div><span class="status-pill ${statusClass}">${statusLabel}</span></div>
+      <div class="acard-meta"><span>📂 ${s.cat}</span><span>👤 ${s.author}</span><span>🏫 ${s.school}</span><span>📅 ${s.date}</span><span>📧 ${s.email}</span></div>
+      <div class="acard-excerpt">${s.excerpt}</div>
+      <div class="acard-actions">${actions}</div>
+    </div>`;
+  }).join('');
+}
+
+function approveArt(id){
+  const s=submissions.find(x=>x.id===id);if(!s)return;
+  s.status='approved';
+  // Notify submitter
+  notifyUser(s.submittedBy,'approved',s.title,`Your article "${s.title}" has been approved and published on the CEGP website!`);
+  renderAdminList();renderHome();renderAllArts();updateAdminStats();renderNav();
+  showToast('✅ Article approved and published!');
+}
+
+function unpublishArt(id){
+  const s=submissions.find(x=>x.id===id);if(!s)return;
+  s.status='pending';renderAdminList();renderHome();renderAllArts();updateAdminStats();
+  showToast('↩ Article moved back to pending.');
+}
+
+function openRejectModal(id){rejectId=id;document.getElementById('reject-reason').value='';document.getElementById('rejectModal').style.display='flex';}
+function closeModal(){document.getElementById('rejectModal').style.display='none';rejectId=null;}
+
+function confirmReject(){
+  const s=submissions.find(x=>x.id===rejectId);if(!s)return;
+  s.status='rejected';
+  s.rejectReason=document.getElementById('reject-reason').value.trim();
+  // Notify submitter
+  notifyUser(s.submittedBy,'rejected',s.title,`Your article "${s.title}" was returned.${s.rejectReason?' Editor feedback: '+s.rejectReason:''}`);
+  closeModal();renderAdminList();updateAdminStats();
+  showToast('❌ Article rejected.');
+}
+
+function previewArt(id){
+  const s=submissions.find(x=>x.id===id);if(!s)return;
+  const orig=s.status;s.status='approved';
+  openArt(id,'admin');s.status=orig;
+}
+
+function notifyUser(email,type,title,text){
+  if(!email)return;
+  const u=users.find(x=>x.email===email);if(!u)return;
+  const today=new Date().toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+  u.notifications.unshift({id:Date.now(),type,title,text,read:false,date:today});
+  if(currentUser&&currentUser.email===email)currentUser.notifications=u.notifications;
+}
+
+function updateAdminStats(){
+  document.getElementById('st-total').textContent=submissions.length;
+  document.getElementById('st-pending').textContent=submissions.filter(s=>s.status==='pending').length;
+  document.getElementById('st-approved').textContent=submissions.filter(s=>s.status==='approved').length;
+  document.getElementById('st-rejected').textContent=submissions.filter(s=>s.status==='rejected').length;
+  const p=submissions.filter(s=>s.status==='pending').length;
+  const badge=document.getElementById('admin-pending-badge');
+  badge.style.display=p?'block':'none';
+  badge.textContent=`${p} Pending Review`;
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────
+function initials(name){return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();}
+function updateChar(iid,cid,max){document.getElementById(cid).textContent=document.getElementById(iid).value.length+'/'+max;}
+function toggleTag(btn){btn.classList.toggle('sel');}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+
+init();
+</script>
+</body>
+</html>
